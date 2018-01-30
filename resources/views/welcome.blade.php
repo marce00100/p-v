@@ -1,8 +1,9 @@
 @extends('layouts.auth')
 
 @section('content')
+<div  style="color: #333; font-family: arial; margin: 0 0 0 100px"><h2>PIVOT Visualizer</h2></div>
   <div id="login-button" style="display:none;">
-      <img src="img/spie-ico-b.png"><h3>Ingresar</h3>
+      <h3 style="margin: 100px auto">Ingresar</h3>
   </div>
 
 

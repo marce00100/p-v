@@ -10,7 +10,7 @@
   }
 </style>
   <div id="container">
-      <h1>PIP-SPIE</h1>
+      <h1>PIVOT-V</h1>
 
       <span class="close-btn">
         <img src="{{ asset('img/close.png') }}">

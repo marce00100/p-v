@@ -81,12 +81,18 @@
     <div class=row>
 
         <div class="col-md-3">
-            <div id="menuPrincipal"  class="sidenav list-group bordered border-default rounded-right w300" style="height: 720px">
+            <div class="input-group ">
+                <input type="text" id="txtBuscaMenu" class="form-control" placeholder="buscar ..." style="border-radius: 8px 0 0 0">
+                <span class="input-group-addon" style="border-radius:  0 8px 0px 0">
+                    <i class="fa fa-search"></i>
+                </span>
+            </div>
+            <div id="menuPrincipal"  class="sidenav list-group bordered border-default rounded-right w300" style="height: 720px" hidden="">
                 <div href="#" id='btnmenu' class="p5" style="cursor: pointer;">
                     <i class="fa fa-bars fa-3x pull-right"></i>
                 </div>   
             </div>
-            <div id="menuDetalle" class="menuDetail " style="height: 720px;" >
+            <div id="menuDetalle" class="menuDetail " style="height: 720px; margin: 0; padding: 0" >
             </div>
         </div>    
         <div class="col-md-9 ">
@@ -102,7 +108,8 @@
             </div>
             {{--  ===============================          Pantalla de inicio  ========================--}}
             <div id="vistaInicio" style="width: 100%; height: 750px; background: white; overflow: hidden; position: relative;" >
-                <img src="/img/spie-ico.png" style=" opacity: 0.1; width: 80%; margin: 100px 0 0 200px ; position: absolute;"> 
+                <h1 style="color:#eee; margin: 5px 25px">Pivot Visualizer</h1>
+                <img src="/img/pivot-fondo-1.png" style=" opacity: 0.1; width: 90%; margin: 0px 0 0 50px ; position: absolute;"> 
             </div>
 
             <div id="contenedor" hidden="">
@@ -128,7 +135,7 @@
                                     <li><a href=# id="predef_update"><i class="fa fa-save fa-2x p2"></i><span> Guardar/actualizar Cambios</span></a></li>                                
                                     <li><a href=# id="predef_del"><i class="fa fa-trash-o fa-2x p2 bg-danger-dark"></i><span> Eliminar actual  </span></a></li>
                                 </ul>
-                                <a href="#" id="btn_vista_Usuario" class="pull-right btn btn-xs"   >
+                                <a href="#" id="btn_vista_Usuario" class="pull-right btn btn-xs"  title ="Cambiar el modo de vista Administrador / Solo Lectura" >
                                     <i class="fa fa-2x fa-user-plus  bg-dark-light pr5 pl5 bordered round"></i><span ></span>
                                 </a>
                             </div>
@@ -175,7 +182,7 @@
                         </div>
 
                         {{-- +++++++++++++++++++         PIVOT PARA SOLO VER     +++++++++++++++++++++++++++++++ --}}
-                        <div id='divDatosRead' class="divPivot oculta_pvt " hidden="">
+                        <div id='divDatosRead' class="divPivot oculta_pvt " >
                             <hr style="margin: 25px 0">
                             <div id=tituloDatos class="mb15 tituloDatos"></div>
                             <div class="row m-0 bg-white mt-2" style="overflow: auto; width: 100%; max-height: 600px; padding: 2px">
@@ -374,6 +381,7 @@
     var ctxM = {
         menuPrincipal : $("#menuPrincipal"), 
         menuDetalle : $("#menuDetalle"),
+        buscadorMenu: $("#txtBuscaMenu"),
         btnmenu : $("#btnmenu"), // boton de abrir y cerrar
         menup_estado : 1, // { 1: abierto, 2: cerrado}
         abrirCerrarMenu : function(){
@@ -400,6 +408,11 @@
                 }
                 ctxM.menuDetalle.addClass(cnf.m.bgSub);
                 ctxC.workspace(res.mensaje.split('_')[1]);
+
+                //TODO es para el uso exclusivo de los indicadores, que se carguen por defeto
+                    ctxG.nodoSel = ctxM.obtenerNodo('11');
+                    ctxM.crearSubmenusHtml(ctxG.nodoSel);
+                    ctxM.buscadorMenu.val('');
             })                     
         },
         crearSubmenusHtml : function(itemSel){
@@ -464,6 +477,19 @@
             return null;
 
         },
+        buscaMenu: function(){
+            var filtro = ctxM.buscadorMenu.val().toUpperCase();
+            var elems = $("#menuDetalle ul a");   
+            for (i = 0; i < elems.length; i++) {
+                var elem = elems.eq(i);
+                if (elem.html().toString().toUpperCase().indexOf(filtro) > -1) {
+                    elem.show();
+                } else {
+                    elem.hide();
+
+                }
+            }
+        }
     }
 
     /*-----------------------------------------------------------------------
@@ -532,42 +558,23 @@
                 ctxG.collection = res.collection;
                 ctxG.varEstActualUnidades.valor_unidad_medida = res.unidad_medida.valor_defecto_um;
                 ctxG.varEstActualUnidades.valor_tipo = res.unidad_medida.valor_tipo;
-                $.get('/api/modulopriorizacion/datosIndicadoresMeta', {id_indicador : ctxG.varEstActual.id_indicador}, function(r){
-                    if(r.mensaje=='ok')
-                    {
-                        ctxG.indicadorActual = r.indicador;
-                        ctxG.indicadorActual.metas = r.metasIndicador
-                    }
-                    else
-                        ctxG.indicadorActual = {};
-                    ctxC.mostrarData(ctxG.collection);
-                    ctxC.showLoading(0)
-                } )
+                // $.get('/api/modulopriorizacion/datosIndicadoresMeta', {id_indicador : ctxG.varEstActual.id_indicador}, function(r){
+                //     if(r.mensaje=='ok')
+                //     {
+                //         ctxG.indicadorActual = r.indicador;
+                //         ctxG.indicadorActual.metas = r.metasIndicador
+                //     }
+                //     else
+                //         ctxG.indicadorActual = {};
+                //     ctxC.mostrarData(ctxG.collection);
+                //     ctxC.showLoading(0)
+                // } )
+                ctxC.mostrarData(ctxG.collection);
+                ctxC.showLoading(0);
                 
             })
         },
 
-        // obtenerData: function(nodoSel){
-        //     objRequest = ctxC.crearRequest(varEst);
-        //     ctxC.showLoading(1);
-        //     $.post('/api/modulopriorizacion/datosVariableEstadistica', objRequest, function(res){                
-        //         ctxG.collection = res.collection;
-        //         ctxG.varEstActualUnidades.valor_unidad_medida = res.unidad_medida.valor_defecto_um;
-        //         ctxG.varEstActualUnidades.valor_tipo = res.unidad_medida.valor_tipo;
-        //         $.get('/api/modulopriorizacion/datosIndicadoresMeta', {id_indicador : ctxG.varEstActual.id_indicador}, function(r){
-        //             if(r.mensaje=='ok')
-        //             {
-        //                 ctxG.indicadorActual = r.indicador;
-        //                 ctxG.indicadorActual.metas = r.metasIndicador
-        //             }
-        //             else
-        //                 ctxG.indicadorActual = {};
-        //             ctxC.mostrarData(ctxG.collection);
-        //             ctxC.showLoading(0)
-        //         } )
-                
-        //     })
-        // },
         mostrarData: function(collection){
             ctxPiv.pivottableUI();
             ctxGra.colocarOpcionesPredefinidas();
@@ -751,7 +758,7 @@
                     ctxG.pivotInstancia = p;
                     ctxPiv.trnDatosDePivot();
                     ctxGra.graficarH();
-                    // ctxPiv.pivottableUIRead(p)
+                    ctxPiv.pivottableUIRead(p)
                     console.log(ctxG);
                 }
             }, true, "es");
@@ -1007,6 +1014,8 @@ $(function(){
         ctxM.abrirCerrarMenu();
     });
 
+
+
     /*  Click sobre elemento del menu 
     */
     $("#menuPrincipal, #menuDetalle").on('click', 'a.nodo_menu', function(event){
@@ -1031,6 +1040,10 @@ $(function(){
             ctxC.mostrarPantallas('grafico');
         }
     }); 
+
+    ctxM.buscadorMenu.keyup(function(){
+        ctxM.buscaMenu();
+    })
 
     /* Click sobre menu de predefinidos
     */
@@ -1115,7 +1128,7 @@ $(function(){
             break;
         }
     }
-    activarMenu('x','mp-9');
+    // activarMenu('x','mp-9');
     menuModulosHideShow(1)
 }) 
 </script>

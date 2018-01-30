@@ -11,7 +11,7 @@
 
     <link rel="icon" type="image/png" sizes="16x16" href="plugins/images/favicons.png">
 
-    <title>Plataforma SPIE</title>
+    <title>Pivot V</title>
     <!-- Bootstrap Core CSS -->
     <link href="{{ asset('sty-home/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('plugins/bower_components/bootstrap-extension/css/bootstrap-extension.css') }}" rel="stylesheet">
@@ -66,7 +66,7 @@
                     </li>
                     <!-- /.dropdown -->
                 </ul>
-                <div class="top-left-part"><a class="logo" href="{{url('home')}}"><b><img src="{{ asset('img/spie-ico-b.png') }}" width="50" alt="home" /></b><span class="hidden-xs">Plataforma SPIE</span></a></div>
+                <div class="top-left-part"><a class="logo" href="{{url('home')}}"><b><img src="{{ asset('img/32.png') }}" width="50" alt="home" /></b><span class="hidden-xs">Autenticación</span></a></div>
             </div>
             <!-- /.navbar-header -->
             <!-- /.navbar-top-links -->

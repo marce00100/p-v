@@ -13,7 +13,7 @@
 
   callWithJQuery(function($) {
     var frFmt, frFmtInt, frFmtPct, nf, tpl;
-    slice = [].slice;
+    // slice = [].slice;
     nf = $.pivotUtilities.numberFormat;
     tpl = $.pivotUtilities.aggregatorTemplates;
     frFmt = nf({
@@ -151,9 +151,9 @@
         // "% participación en fila (cuenta)": tpl.fractionOf(tpl.count(), "row", frFmtPct),
         // "% participación en columna (cuenta)": tpl.fractionOf(tpl.count(), "col", frFmtPct)
         
-        "haber de prueba" : tpl.lili(frFmt),
-        "fract" : tpl.fract(tpl.sum(), "row",frFmtPct),
-        "suma valor" : function(){ return tpl.sum(frFmtInt)(['valor']) }
+        // "haber de prueba" : tpl.lili(frFmt),
+        // "fract" : tpl.fract(tpl.sum(), "row",frFmtPct),
+        // "suma valor" : function(){ return tpl.sum(frFmtInt)(['valor']) }
       },
       renderers: {
         "Tabla": $.pivotUtilities.renderers["Table"],

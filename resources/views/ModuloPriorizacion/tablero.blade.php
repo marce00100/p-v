@@ -6,8 +6,26 @@
 
 <link rel="stylesheet" type="text/css" href="/plugins/modify/pivot___.css">
 <link rel="stylesheet" href="/plugins/bower_components/bootstrap-urban-master/urban.css" type="text/css" />
-<style>
 
+
+
+    <link rel="stylesheet" type="text/css" href="/sty-mode-2/vendor/plugins/magnific/magnific-popup.css">
+    <!-- Admin Forms CSS -->
+    <link rel="stylesheet" type="text/css" href="/sty-mode-2/assets/admin-tools/admin-forms/css/admin-forms.css">
+    <!-- Admin Modals CSS -->
+    <link rel="stylesheet" type="text/css" href="/sty-mode-2/assets/admin-tools/admin-plugins/admin-modal/adminmodal.css">
+    <!-- Theme CSS -->
+    {{-- TODO habilitar theme.css --}}
+    {{-- <link rel="stylesheet" type="text/css" href="/sty-mode-2/assets/skin/default_skin/css/theme.css"> --}}
+    <link rel="stylesheet" type="text/css" href="/sty-mode-2/vendor/plugins/slick/slick.css" />
+<style>
+.popup-basic {
+  position: relative;
+  background: #FFF;
+  width: auto;
+  max-width: 700px;
+  margin: 40px auto;
+}
 .sidenav {
     position: absolute;
     z-index: 1;
@@ -71,6 +89,9 @@
 .oculta_pvt .pvtTdForRender, .oculta_pvt .pvtAxisContainer, .oculta_pvt  .pvtVals{
     display: none}
 
+.activo{
+    font-weight: bolder;
+}
 /*.pvtTotal, .pvtTotalLabel, .pvtGrandTotal {display: none}*/
 </style>
 @endsection
@@ -79,7 +100,7 @@
 @section('content')
 <div class='container-fluid'>
     <div class=row>
-
+        {{-- ================================================ MENU  =========================================================== --}}
         <div class="col-md-3">
             <div class="input-group ">
                 <input type="text" id="txtBuscaMenu" class="form-control" placeholder="buscar ..." style="border-radius: 8px 0 0 0">
@@ -94,9 +115,19 @@
             </div>
             <div id="menuDetalle" class="menuDetail " style="height: 720px; margin: 0; padding: 0" >
             </div>
-        </div>    
+        </div> 
+
+
         <div class="col-md-9 ">
-            {{-- ####################        loading #######################################333--}}
+
+            {{--  ===============================      VISTA INICIO  ========================--}}
+            <div id="vistaInicio" style="width: 100%; height: 750px; background: white; overflow: hidden; position: relative;" >
+                <h1 style="color:#eee; margin: 5px 25px">Pivot Visualizer</h1>
+                <img src="/img/pivot-fondo-1.png" style=" opacity: 0.1; width: 90%; margin: 0px 0 0 50px ; position: absolute;"> 
+            </div>
+
+
+            {{-- ===============================       LOADING     ===============================================--}}
             <div id="loading" class="bg-white" style="width: 100%; height: 1000px; background: white" hidden="" > 
                 <div style="left: 40%; top: 200px; width: 100%; position: absolute;">
                     <div  style="width: 20%; padding: 0 25px">
@@ -106,89 +137,134 @@
                     <div class="progress progress-striped active" style="margin-top: 20px; width: 20%;height: 20px"><div class="progress-bar" style="width: 100%"></div></div>                   
                 </div>
             </div>
-            {{--  ===============================          Pantalla de inicio  ========================--}}
-            <div id="vistaInicio" style="width: 100%; height: 750px; background: white; overflow: hidden; position: relative;" >
-                <h1 style="color:#eee; margin: 5px 25px">Pivot Visualizer</h1>
-                <img src="/img/pivot-fondo-1.png" style=" opacity: 0.1; width: 90%; margin: 0px 0 0 50px ; position: absolute;"> 
-            </div>
+
 
             <div id="contenedor" hidden="">
-                <div class="row">
-                    <div id="contenedorPredefinidos" class="col-sm-12 stats-row m-0 bg-white p-3" >
-                    </div>
-                </div>
+
                 <div class="row m-0">
+                    {{-- ============================= CONTENEDOR ====================================== --}}
                     <div id="contenedorDatos" style="height: 1300px; max-height: auto; width: 100%; "  class="bg-white p15 mt-1" > 
-                         {{-- ::::::::::::::::::::        BOTONES DE PANTALLAS y CONFIGURACION  :::::::::::::::::::::::  --}}
-                        <div id="divTitulo" class="row">
+
+                         {{-- ===========================    BOTONES DE PANTALLAS y CONFIGURACION  ===========================  --}}
+                        <div id="divTitulo" class="row mb5">
                             <div id="titulo" class="col-sm-9"></div>
                             <div class="col-sm-3">      
 
-                                <a href="#" id="btn_grafico" class="btn btn-default btn-xs  " hidden="" ><i class="fa fa-2x fa-bar-chart"></i></a>
-                                <a href="#" id="btn_tabla" class="btn btn-default btn-xs " hidden=""><i class="fa fa-2x fa-table"></i></a>
+                                <a href="javascript:void(0)" id="btn_grafico" class="btn btn-default btn-xs  " hidden="" ><i class="fa fa-lg fa-bar-chart"></i></a>
+                                <a href="javascript:void(0)" id="btn_tabla" class="btn btn-default btn-xs " hidden=""><i class="fa fa-lg fa-table"></i></a>
                                 
-                                <a id="btn_menuconfig_acciones" class="dropdown-toggle pull-right btn btn-xs" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >
-                                    <i class="fa fa-2x fa-cog bg-dark-light pr5 pl5 bordered round"></i><span ></span>
-                                </a>
-                                <ul class="dropdown-menu pull-right">
-                                    <li><a href=# id="predef_new"><i class="fa fa-clone fa-2x p2"></i><span> Guardar como Nueva  </span></a></li>
-                                    <li><a href=# id="predef_update"><i class="fa fa-save fa-2x p2"></i><span> Guardar/actualizar Cambios</span></a></li>                                
-                                    <li><a href=# id="predef_del"><i class="fa fa-trash-o fa-2x p2 bg-danger-dark"></i><span> Eliminar actual  </span></a></li>
+                                <div class="pull-right">
+                                    <a href="#" id="btn_vista_Usuario" class="text-default"  title ="Cambiar el modo de vista Administrador / Solo Lectura" >
+                                        <i class="fa fa-lg fa-user-plus   pr5 pl5  round"></i><span ></span>
+                                    </a>
+                                    <a id="btn_menuconfig_acciones" class="dropdown-toggle text-default" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >
+                                        <i class="fa fa-lg fa-cog  pr5 pl5  round"></i><span ></span>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <h5 class="ml10"><b>Sets predefinidos</b></h5>
+                                        <li><a href="javascript:void(0)" id="predef_new"><i class="fa fa-clone fa-lg p2"></i><span> Guardar como Nueva  </span></a></li>
+                                        <li><a href="javascript:void(0)" id="predef_update"><i class="fa fa-save fa-lg p2"></i><span> Guardar/actualizar Cambios</span></a></li>
+                                        <li><a href="javascript:void(0)" id="predef_del"><i class="fa fa-trash-o fa-lg p2 text-danger"></i><span> Eliminar actual  </span></a></li>
+                                        <h5 class="ml10"><b>Anexos externos</b></h5>
+                                        <li><a href="javascript:void(0)" id="anexar_archivo_ext"><i class="fa fa-stack-overflow fa-lg p2"></i><span> Archivos Descargas </span></a></li>
+                                        <li><a href="javascript:void(0)" id="anexar_dashboard_ext"><i class="fa fa-external-link fa-lg p2"></i><span> Dashboard Externo </span></a></li>
+                                    </ul>
+                                    
+                                </div>
+                                
+                            </div>
+
+                            <div id="submenus_pv" class="topbar-left ml30">                                
+                                <ul class="nav nav-list nav-list-topbar pull-left pbn mn">
+                                    <li id="pv_submenu_1">
+                                        <span style="cursor: pointer; margin-left: 40px"  id="1">Pivots  </span>
+                                    </li>
+                                    <li id="pv_submenu_2">
+                                        <span style="cursor: pointer; margin-left: 40px"  id="2">Dashboards</span>
+                                    </li>
                                 </ul>
-                                <a href="#" id="btn_vista_Usuario" class="pull-right btn btn-xs"  title ="Cambiar el modo de vista Administrador / Solo Lectura" >
-                                    <i class="fa fa-2x fa-user-plus  bg-dark-light pr5 pl5 bordered round"></i><span ></span>
-                                </a>
                             </div>
                         </div>
+                        <hr class="mb5 mt5">
 
-                        {{-- ****************     PIVOT  PARA ADMIN ************************--}}
-                        <div id='divDatosUI' class="divPivot">
-                            <div id=tituloDatosUI class="mb15 tituloDatos"></div>
-                            <div class="row m-0 bg-white mt-2" style="overflow: auto; width: 100%; max-height: 600px; padding: 2px">
-                                <div id="pvtTableUI" ></div>                
-                            </div>
-                            <hr style="margin: 25px 0">
-                        </div>
                         
-                        {{-- ================= CHARTS ==================--}}
-                        <div id='divGrafico'>
-                            <div id="tituloGrafico" class="mb15"></div>
+                        <div id="contenido_principal">
 
-                            <div class="row" >
-                                <div class="col-sm-2" id="configuracionGrafico">
-                                    <h5>OPCIONES DE GRAFICO</h5>
-                                    <label >Tipo Gráfico</label>
-                                    <select id="opcionesGrafico"  style="width: 100%">
-                                        <option value="spline">Linea</option>
-                                        <option value="column">Columnas</option>
-                                        <option value="column-stacked">Columnas apiladas</option>    
-                                        <option value="column-stackedp">Columnas apiladas en proporcion</option>
-                                        <option value="bar">Barras</option> 
-                                        <option value="bar-stacked">Barras apiladas</option>    
-                                        <option value="bar-stackedp">Barras apiladas en proporcion</option>
-                                        <option value="area">Area</option>
-                                        <option value="area-stacked">Areas apiladas</option>    
-                                        <option value="area-stackedp" >Areas apiladas en proporcion</option>
-                                        <option value="pie" >Dona</option> 
-                                    </select>
-                                    <hr>                                    
-                                    <label class="block"  ><input type="checkbox" id="viewlabel" name="viewlabel" /> Ver Datos</label>
-                                    <label class="block" ><input type="checkbox" id="view3d" name="view3d" /> 3D</label>
+                            {{-- =========================================== CONTENIDO PIVOT ============================================================--}}
+                            <div class="col-md-12 slick-slide" id="contenido_pivot">
+                                {{-- ===============================     Iconos y Sets Predefinidos   ===========================  --}}
+                                <div class="row bg-dark-dark">
+                                    <div id="contenedorPredefinidos" class="col-sm-12 stats-row m-0 p-3" >
+                                    </div>
+                                    <hr>
                                 </div>
-                                <div class="col-sm-10" style="height: 600px">
-                                    <div id="divChart" style="font-family: arial; width: 90%; min-height: 100%; margin: 0 auto"></div>
+
+                                {{-- *============================================   PIVOT  PARA ADMIN *====================================================== --}}
+                                <div id='divDatosUI' class="divPivot">
+                                    <div id=tituloDatosUI class="mb15 tituloDatos"></div>
+                                    <div class="row m-0 bg-white mt-2" style="overflow: auto; width: 100%; max-height: 600px; padding: 2px">
+                                        <div id="pvtTableUI" ></div>                
+                                    </div>
+                                    <hr style="margin: 25px 0">
                                 </div>
+                                
+                                {{-- ============================================ CHARTS ==================--}}
+                                <div id='divGrafico'>
+                                    <div id="tituloGrafico" class="mb15"></div>
+                                    <div class="row" >
+                                        <div class="col-sm-2" id="configuracionGrafico">
+                                            <h5>OPCIONES DE GRAFICO</h5>
+                                            <label >Tipo Gráfico</label>
+                                            <select id="opcionesGrafico"  style="width: 100%">
+                                                <option value="spline">Linea</option>
+                                                <option value="column">Columnas</option>
+                                                <option value="column-stacked">Columnas apiladas</option>    
+                                                <option value="column-stackedp">Columnas apiladas en proporcion</option>
+                                                <option value="bar">Barras</option> 
+                                                <option value="bar-stacked">Barras apiladas</option>    
+                                                <option value="bar-stackedp">Barras apiladas en proporcion</option>
+                                                <option value="area">Area</option>
+                                                <option value="area-stacked">Areas apiladas</option>    
+                                                <option value="area-stackedp" >Areas apiladas en proporcion</option>
+                                                <option value="pie" >Dona</option> 
+                                            </select>
+                                            <hr>                                    
+                                            <label class="block"  ><input type="checkbox" id="viewlabel" name="viewlabel" /> Ver Datos</label>
+                                            <label class="block" ><input type="checkbox" id="view3d" name="view3d" /> 3D</label>
+                                        </div>
+                                        <div class="col-sm-10" style="height: 400px">
+                                            <div id="divChart" style="font-family: arial; width: 60%; min-height: 100%; margin: 0 auto"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- ===========================       PIVOT PARA SOLO VER    =========================== --}}
+                                <div id='divDatosRead' class="divPivot oculta_pvt " >
+                                    <hr style="margin: 25px 0">
+                                    <div id=tituloDatos class="mb15 tituloDatos"></div>
+                                    <div class="row m-0 bg-white mt-2" style="overflow: auto; width: 100%; max-height: 600px; padding: 2px">
+                                        <div id="pvtTableUIRead"  ></div>                
+                                    </div>
+                                </div>
+
                             </div>
+
+                            {{-- =========================== Contenidooo de Dash externos =========================== --}}
+                            <div id="contenido_externo" class="col-md-12 slick-slide">
+                                <select class="form-control" id="iframe_combo"></select>
+
+                                <iframe style="width: 98%; height: 900px; " id="iframe_url" src="">
+                                    
+                                </iframe>
+                                
+                            </div>
+                            
                         </div>
 
-                        {{-- +++++++++++++++++++         PIVOT PARA SOLO VER     +++++++++++++++++++++++++++++++ --}}
-                        <div id='divDatosRead' class="divPivot oculta_pvt " >
-                            <hr style="margin: 25px 0">
-                            <div id=tituloDatos class="mb15 tituloDatos"></div>
-                            <div class="row m-0 bg-white mt-2" style="overflow: auto; width: 100%; max-height: 600px; padding: 2px">
-                                <div id="pvtTableUIRead"  ></div>                
-                            </div>
-                        </div>
+
+
+                       
+
                     </div>
                 </div>
             </div>
@@ -199,7 +275,8 @@
 </div>
 
 
-<div id="predefModal" class="modal  " role="dialog">
+{{-- <div id="predefModal" class="modal  " role="dialog"> --}}
+<div id="predefModal" class="white-popup-block popup-basic admin-form mfp-with-anim mfp-hide " >
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
@@ -251,8 +328,57 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="btnCancelar" class="btn btn-warning" data-dismiss="modal"><i class="fa fa-times"></i><span> Cancelar</span></button>
-                <button id="btnGuardar" type="submit" class="btn btn-success "  data-dismiss="modal" ><i class="fa fa-check"></i><span> Aceptar</span></button>
+                <button id="btnCancelar" class="btn btn-warning pv_cancel" ><i class="fa fa-times"></i><span> Cancelar</span></button>
+                <button id="btnGuardar" type="submit" class="btn btn-success "   ><i class="fa fa-check"></i><span> Aceptar</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="anexarModal" class="white-popup-block popup-basic admin-form mfp-with-anim mfp-hide w500" >
+    <div class="">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header bg-dark-light">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title bg-dark-light" id="modal_titulo"></h4>
+                
+            </div>
+            <div class="modal-body" >
+                <div class="form" role="form" id=''>
+                    <input class="hidden"  id="accion">
+                    <div class="form-group" id="div_anexar_dashboard">
+                        <label class="control-label" for="txt_dashboard">Url o tag del dashboard</label>
+                        <div class="">
+                            <textarea class="form-control" id="txt_dashboard" placeholder="Url / tag "></textarea>
+                        </div>
+                    </div>    
+                    <div class="form-group mb2" id="div_anexar_archivo" hidden="">
+                        <label class="control-label" for="txt_archivo">Archivo</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="txt_archivo" placeholder="Archivo anexo para descarga">
+                        </div>
+                    </div> 
+
+                    <div class="form-group mb2" id="" >
+                        <label class="control-label" for="descripcion">Descripción</label>
+                        <div class="">
+                            <input type="text" class="form-control" id="descripcion" placeholder="breve descripción">
+                        </div>
+                    </div>
+                    <div class="form-group"><button class="btn btn-sm btn-success w300" id="btn_anexar" style="margin:0 25%"> <i class="fa fa-plus"></i> Agregar</button></div>
+                    
+                    <label class="col-md-12 bg-bluegrey text-white">Elementos </label>
+                    <div id="elementos" class="bordered" style="height: 300px; margin: 0px auto;" >
+                    </div>
+                     
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnCancelar" class="btn btn-warning pv_cancel" ><i class="fa fa-times"></i><span> Cancelar</span></button>
+                <button id="btnGuardar" type="submit" class="btn btn-success pv_guardar"   ><i class="fa fa-check"></i><span> Aceptar</span></button>
             </div>
         </div>
     </div>
@@ -272,6 +398,10 @@
 <script type="text/javascript" src="/plugins/modify/pivot___.js"></script>
 <script type="text/javascript" src="/plugins/modify/pivot___.es.js"></script>
 
+
+{{-- <script type="text/javascript" src="{{ asset('sty-mode-2/assets/admin-tools/admin-forms/js/additional-methods.min.js') }}"></script> --}}
+<script type="text/javascript" src="{{ asset('sty-mode-2/vendor/plugins/magnific/jquery.magnific-popup.js') }}"></script>
+<script type="text/javascript" src="/sty-mode-2/vendor/plugins/slick/slick.min.js"></script>
 <script type="text/javascript" src="/plugins/underscore/underscore-min.js"></script>
 
 
@@ -354,7 +484,7 @@
         },
 
     }
-    var pivot = '';
+    // var pivot = '';
     /*-----------------------------------------------------------------------
      *      ctxG variable que contiene el contexto global, variables globales
      */
@@ -373,6 +503,25 @@
             dimFila : [],
             total: 0, t_cols : {}, t_filas : {}, total_p : 0, tp_cols : {}, tp_filas: {},
         },
+        showModal : function(modal){
+            $(".state-error").removeClass("state-error")
+            // $(modal + " em").remove();
+            $.magnificPopup.open({
+                removalDelay: 500, //delay removal by X to allow out-animation,
+                // focus: '#pmra_id_pilar',
+                items: {
+                    src: modal
+                },
+                // overflowY: 'hidden', //
+                callbacks: {
+                    beforeOpen: function(e) {
+                        var Animation = "mfp-zoomIn";
+                        this.st.mainClass = Animation;
+                    }
+                },
+                midClick: true // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
+            });
+        }, 
     }
 
     /*-----------------------------------------------------------------------
@@ -517,14 +666,34 @@
                         imagen = cnf.c.img[key]; 
                 }
 
-                var divImghtml = '<div id="' + i + '" class="stat-item item_campo_predefinido containertipoimg"  title="' + item.etiqueta + '"  style="cursor:pointer;">\
-                                        <img  src="' + imagen +'" alt="' + item.etiqueta + '" class="image" style="width:80px;height:60px">\
+                var divImghtml = '<div id="' + i + '" class="item_campo_predefinido containertipoimg ml15"  title="' + item.etiqueta + '"  style="cursor:pointer; float:left">\
+                                        <img  src="' + imagen +'" alt="' + item.etiqueta + '" class="image" style="width:50px;height:40px">\
                                         <div class="filt" >\
-                                            <div class="text">' + item.etiqueta + '</div>\
+                                            <div style="font-size:9px" class="text text-default">' + item.etiqueta + '</div>\
                                         </div>\
                                     </div>';
                 ctxC.contenedorPredefinidos.append(divImghtml);
+            }            
+        },
+        cargarDahboardsExternos: function(variableEst){
+            dashboards_ext = variableEst.dashboards_ext;
+            if(dashboards_ext){
+                var opts = dashboards_ext ?  dashboards_ext.reduce(function(carry, elem){
+                    return carry + `<option value="${elem.url}">${elem.descripcion}</option>`;
+                }) : '<option>seleccione..</option>';
+                $("#iframe_combo").html(opts);
             }
+            else{
+                $("#iframe_combo").html('<option>SIN INFO</option>');
+            }
+            
+
+
+        },
+        submenu_pv_activo :  function(index){
+            $("#submenus_pv li").removeClass('activo');            
+            $("#pv_submenu_" + (index)).addClass('activo');
+            $("#contenido_principal").slickGoTo(index-1);
         },
         crearRequest: function(varEst)  {
             objVE = {
@@ -540,10 +709,9 @@
             }
             return objVE;
         },    
-
         obtenerData: function(nodoSel){
             // objRequest = ctxC.crearRequest(varEst);
-            ctxC.showLoading(1);
+            ctxC.showLoading(1);            
             $.post('/api/modulopriorizacion/datosVariableEstadistica', 
                     {
                         id_dash_config: nodoSel.id_dash_config, 
@@ -555,6 +723,7 @@
                 ctxG.set_predef_actual.index = 0;
                 ctxC.actualizaTitulos();
                 ctxC.cargarHTMLPredefinidos(ctxG.varEstActual);   
+                ctxC.cargarDahboardsExternos(ctxG.varEstActual);   
                 ctxG.collection = res.collection;
                 ctxG.varEstActualUnidades.valor_unidad_medida = res.unidad_medida.valor_defecto_um;
                 ctxG.varEstActualUnidades.valor_tipo = res.unidad_medida.valor_tipo;
@@ -570,11 +739,16 @@
                 //     ctxC.showLoading(0)
                 // } )
                 ctxC.mostrarData(ctxG.collection);
+                // ctxC.submenu_pv_activo(2);
+                ctxC.submenu_pv_activo(1);
                 ctxC.showLoading(0);
+                // setTimeout(function(){
+                    
+                // }, 1200);
+                
                 
             })
         },
-
         mostrarData: function(collection){
             ctxPiv.pivottableUI();
             ctxGra.colocarOpcionesPredefinidas();
@@ -625,12 +799,10 @@
         }    
     };
 
-    /*-----------------------------------------------------------------------
-     *      ctxPiv variable que contiene el contexto del Pivot  
-     */
-    var ctxModal = {
+    /*----------------  Modal para predefinidos   ---------------------------  */
+    var ctxmodPred = {
         predefModal : $("#predefModal"),
-        tituloModal : $("#modal_titulo"),
+        tituloModal : $("#predefModal #modal_titulo"),
         mostrarModal: function(op)
         {
             var oculta = op == 'del';
@@ -660,7 +832,8 @@
                 this.tituloModal.html("Nueva Visualización");
                 $("#predefModal #predef_posicion").val(ctxG.varEstActual.sets_predefinidos.length + 1);
             }
-            this.predefModal.fadeIn(500).modal();
+            // this.predefModal.fadeIn(500).modal();
+            ctxG.showModal(ctxmodPred.predefModal);
 
         },
         guardarPredef: function(){
@@ -705,6 +878,7 @@
             };
             $.post("/api/modulopriorizacion/tablero/guardaconfiguracion", objReq, function(res){
                 ctxC.cargarHTMLPredefinidos(ctxG.varEstActual);  
+                $.magnificPopup.close();
             });
         },
         cargarImagenes : function(){
@@ -719,9 +893,92 @@
         },
     }
 
-    /*-----------------------------------------------------------------------
-     *      ctxPiv variable que contiene el contexto del Pivot  
-     */
+    /*----------------  Modal anexar externos ----------------------------  ----------------------------- ----------------------------------------------- -----------------------------------------   */
+    var ctxmodAnx = {
+        tituloModal : $("#anexarModal #modal_titulo"),
+
+        mostrarModal: function(op)
+        {
+            var ocultar = op == 'anexar_archivo_ext';
+            $('#div_anexar_dashboard').attr('hidden', ocultar);            
+            $('#div_anexar_archivo').attr('hidden', !ocultar);
+
+            this.tituloModal.html( (op==true) ? 'Agregar archivos anexos descargables' : 'Vincular con otra fuente');
+            $("#anexarModal input, #anexarModal textarea").val('');
+            $("#anexarModal #elementos").html('');
+
+            var elems =  (op == "anexar_archivo_ext") ?  ctxG.varEstActual.archivos_ext : ctxG.varEstActual.dashboards_ext            
+
+            if(elems && elems.length > 0)  {
+                var html = elems.reduce(function(carry, elem){
+                    return carry + ctxmodAnx.generaDivs(elem);
+                }, '');
+                $("#anexarModal #elementos").html(html);
+                $("#anexarModal #elementos").html(html);
+            }
+            $("#anexarModal #accion").val(op);
+
+            ctxG.showModal("#anexarModal");
+
+        },
+        generaDivs: function(elem){
+            return  `<div class="mt5 bb p5 pv_anexo">
+                        <div><span class="pv_anx_url">${elem.url}</span> <a href="javascript:void(0)" class="pull-right pv_del_anx"><i class="text-danger fa fa-minus-circle "></i></a></div>
+                        <div><b><span class="pv_anx_desc">${elem.descripcion}</span></b></div>
+                    </div>`;
+        },
+        anexarElemento : function(){    
+            var elem = {};
+            elem.descripcion = $("#anexarModal #descripcion").val();
+            if($("#anexarModal #accion").val() == 'anexar_archivo_ext'){
+
+
+            }
+            else{                
+                elem.url = $("#anexarModal #txt_dashboard").val();
+                if(elem.url.substring(0,7).toLowerCase() == '<iframe' || elem.url.substring(0,6).toLowerCase() == '<frame' ) {
+                    elem.url = $(elem.url).attr('src') || 'error: No valido';
+                }
+            }
+
+            $("#anexarModal #elementos").append(ctxmodAnx.generaDivs(elem));
+            //limpia inputs
+            $("#anexarModal #descripcion, #anexarModal #txt_dashboard,  #anexarModal #txt_archivo, #anexarModal textarea").val('');
+        },
+        guardar: function(){
+            var op = $("#anexarModal #accion").val();
+
+            var anexos = [];
+            $("#anexarModal #elementos .pv_anexo").each(function(){
+                var anx = {
+                    'url' : $(this).find('.pv_anx_url').html(),
+                    'descripcion' : $(this).find('.pv_anx_desc').html(),
+                };
+                anexos.push(anx);
+            });
+
+            if(op == 'anexar_archivo_ext'){
+                ctxG.varEstActual.archivos_ext = anexos;
+            }
+            if(op == 'anexar_dashboard_ext'){
+                ctxG.varEstActual.dashboards_ext = anexos;
+            };
+
+            var configuracionString = JSON.stringify(ctxG.varEstActual);
+            var objReq = {
+                id_dash_menu : ctxG.nodoSel.id,
+                configuracionString : configuracionString,
+                _token : $('input[name=_token]').val(),
+            };
+            $.post("/api/modulopriorizacion/tablero/guardaconfiguracion", objReq, function(res){
+                ctxC.cargarDahboardsExternos(ctxG.varEstActual);  
+                $.magnificPopup.close();
+            });
+        },
+
+    }
+
+    /*------------------------- ctxPiv variable que contiene el contexto del Pivot   */
     var ctxPiv = {
         pvtTableUI: $("#pvtTableUI"),
         pvtTableUIRead: $("#pvtTableUIRead"),
@@ -822,9 +1079,7 @@
         }, 
     }
 
-    /*-----------------------------------------------------------------------
-     *      ctxGra variable que contiene el contexto del grafico  
-     */
+    /*------------------------- ctxGra variable que contiene el contexto del grafico  */
     var ctxGra = {
         colocarOpcionesPredefinidas: function()
         {
@@ -1031,14 +1286,9 @@ $(function(){
         else
         {
             ctxC.obtenerData(ctxG.nodoSel);
-            // ctxG.varEstActual = jQuery.parseJSON(ctxG.nodoSel.configuracion);
-            // ctxG.set_predef_actual = ctxG.varEstActual.sets_predefinidos[0]; // por defecto el primero
-            // ctxG.set_predef_actual.index = 0;
-            // ctxC.actualizaTitulos();
-            // ctxC.cargarHTMLPredefinidos(ctxG.varEstActual);    
-            // ctxC.obtenerData(ctxG.varEstActual);
             ctxC.mostrarPantallas('grafico');
         }
+        
     }); 
 
     ctxM.buscadorMenu.keyup(function(){
@@ -1062,31 +1312,47 @@ $(function(){
         ctxC.mostrarPantallas(op);
     });
 
-    /*  Cambia config del grafico
-    */
+    /*  ------------- Cambia config del grafico */
     $("#configuracionGrafico ").change(function(){
         ctxGra.graficarH();
     });
 
-    /*  Click sobre algun elemento del menu de guardar, modificar, o eliminar predefinidos (new, update, del)    
-     */
+    /* ------------- Click guardar, modificar, o eliminar predefinidos (new, update, del)   */
     $("#predef_update, #predef_new, #predef_del").click(function(){
         var op = $(this).attr('id').replace('predef_','');
-        ctxModal.mostrarModal(op);        
+        ctxmodPred.mostrarModal(op);        
     });
 
-    /* Click sobre una imagen de la ventana modal
-    */
+
+    /* Click sobre una imagen de la ventana modal */
     $("#selectImagenes").on('click', 'img', function(){
         id_imagen = $(this).attr('id');
         $("#predefModal #predef_imagen_previsualizacion").attr("src",cnf.c.img[id_imagen]);
         $("#predef_imagen").val(id_imagen)
     })
 
-    /* Click Guardar de la ventana Modal
-    */
+    /* --------- Guardar Predefinido de modal */
     $("#predefModal #btnGuardar").click(function(){
-        ctxModal.guardarPredef();
+        ctxmodPred.guardarPredef();
+    });
+
+
+    /* --------- click menu Anexos ---------*/
+    $("#anexar_archivo_ext, #anexar_dashboard_ext").click(function(){
+        ctxmodAnx.mostrarModal($(this).attr('id'));        
+    });
+
+    /* ---------      En boton anexar ----------*/
+    $("#anexarModal #btn_anexar").click(function(){
+       ctxmodAnx.anexarElemento();
+    });
+    /* --------- Al remover quitar elemento dashboard o excel ---------*/
+    $("#anexarModal").on('click', '.pv_del_anx', function(){
+        $(this).parent().parent().remove();
+    });
+    /* ------   Guardar Anexo --------------------*/
+    $("#anexarModal .pv_guardar").click(function(){
+        ctxmodAnx.guardar();
     });
 
 
@@ -1097,6 +1363,32 @@ $(function(){
         ctxC.workspace();
 
     })
+
+    /* De los Bpotones Cancelar*/
+    $(".pv_cancel").click(function(){
+         $.magnificPopup.close();
+    });
+
+
+    $("#iframe_combo").change(function(){
+        url = $(this).val();
+        $("#iframe_url").attr('src', url);
+    })
+
+    $('#contenido_principal').slick({
+        dots: false,
+        infinite: false,
+        speed: 500,
+        arrows:false,
+        touchMove:false,
+        swipe:false,
+    });
+
+    /* De los submenus de arriba */            
+    $("#submenus_pv span").click(function(){
+        index = $(this).attr('id');
+        ctxC.submenu_pv_activo(index);
+    });
 
 
 });

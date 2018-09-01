@@ -9,20 +9,14 @@
 
       <title>Pivot V</title>
 
-        <!-- Fonts -->
-{{--         <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'> --}}
-        {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
-        <link rel="stylesheet" href="{{ asset('css/style-login.css') }}">
+       <link rel="stylesheet" href="{{ asset('css/style-login.css') }}">
     </head>
     <body>
         @yield('content')
 
 
-        <script src='http://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js'></script>
-        <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+        {{-- <script src='http://cdnjs.cloudflare.com/ajax/libs/gsap/1.16.1/TweenMax.min.js'></script> --}}
+        <script src="{{ asset('plugins/bower_components/jquery/dist/jquery.min.js') }}"></script>
         <script  src="{{ asset('js/login.js') }}"></script>
         <script type="text/javascript">
           $(document).ready(function(){

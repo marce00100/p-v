@@ -20,11 +20,11 @@
     <link rel="stylesheet" type="text/css" href="/sty-mode-2/vendor/plugins/slick/slick.css" />
 <style>
 .popup-basic {
-  position: relative;
-  background: #FFF;
-  width: auto;
-  max-width: 700px;
-  margin: 40px auto;
+    position: relative;
+    background: #FFF;
+    width: auto;
+    max-width: 700px;
+    margin: 40px auto;
 }
 .sidenav {
     position: absolute;
@@ -166,7 +166,7 @@
                                         <li><a href="javascript:void(0)" id="predef_update"><i class="fa fa-save fa-lg p2"></i><span> Guardar/actualizar Cambios</span></a></li>
                                         <li><a href="javascript:void(0)" id="predef_del"><i class="fa fa-trash-o fa-lg p2 text-danger"></i><span> Eliminar actual  </span></a></li>
                                         <h5 class="ml10"><b>Anexos externos</b></h5>
-                                        <li><a href="javascript:void(0)" id="anexar_archivo_ext"><i class="fa fa-stack-overflow fa-lg p2"></i><span> Archivos Descargas </span></a></li>
+                                        <li><a href="javascript:void(0)" id="anexar_archivo_ext"><i class="fa fa-stack-overflow fa-lg p2"></i><span> Archivos para Descargas </span></a></li>
                                         <li><a href="javascript:void(0)" id="anexar_dashboard_ext"><i class="fa fa-external-link fa-lg p2"></i><span> Dashboard Externo </span></a></li>
                                     </ul>
                                     
@@ -177,10 +177,13 @@
                             <div id="submenus_pv" class="topbar-left ml30">                                
                                 <ul class="nav nav-list nav-list-topbar pull-left pbn mn">
                                     <li id="pv_submenu_1">
-                                        <span style="cursor: pointer; margin-left: 40px"  id="1">Pivots  </span>
+                                        <span style="cursor: pointer; margin-left: 40px"  id="1">Visualizador  </span>
                                     </li>
                                     <li id="pv_submenu_2">
-                                        <span style="cursor: pointer; margin-left: 40px"  id="2">Dashboards</span>
+                                        <span style="cursor: pointer; margin-left: 40px"  id="2">Descargas  </span>
+                                    </li>
+                                    <li id="pv_submenu_3">
+                                        <span style="cursor: pointer; margin-left: 40px"  id="3">Dashboards</span>
                                     </li>
                                 </ul>
                             </div>
@@ -249,8 +252,16 @@
 
                             </div>
 
+                            {{-- =========================== Contenidooo de Archivos Externos Descargas ===================== --}}
+                            <div id="archivos_ext" class="col-md-12 slick-slide">
+                                <h4>Archivos</h4>
+                                <div class="m25"></div>
+                                
+                            </div>
+
                             {{-- =========================== Contenidooo de Dash externos =========================== --}}
-                            <div id="contenido_externo" class="col-md-12 slick-slide">
+                            <div id="contenido_ext" class="col-md-12 slick-slide">
+                                <h4>Otras fuentes (dashboards)</h4>
                                 <select class="form-control" id="iframe_combo"></select>
 
                                 <iframe style="width: 98%; height: 900px; " id="iframe_url" src="">
@@ -260,16 +271,9 @@
                             </div>
                             
                         </div>
-
-
-
-                       
-
                     </div>
                 </div>
             </div>
-
-        
         </div>
     </div>
 </div>
@@ -328,15 +332,16 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button id="btnGuardar" type="submit" class="btn btn-primary "   ><i class="fa fa-check"></i><span> Guardar</span></button>
                 <button id="btnCancelar" class="btn btn-warning pv_cancel" ><i class="fa fa-times"></i><span> Cancelar</span></button>
-                <button id="btnGuardar" type="submit" class="btn btn-success "   ><i class="fa fa-check"></i><span> Aceptar</span></button>
+                
             </div>
         </div>
     </div>
 </div>
 
 
-
+{{-- ANEXAR MODAL --}}
 <div id="anexarModal" class="white-popup-block popup-basic admin-form mfp-with-anim mfp-hide w500" >
     <div class="">
         <!-- Modal content-->
@@ -347,38 +352,49 @@
                 
             </div>
             <div class="modal-body" >
-                <div class="form" role="form" id=''>
-                    <input class="hidden"  id="accion">
-                    <div class="form-group" id="div_anexar_dashboard">
-                        <label class="control-label" for="txt_dashboard">Url o tag del dashboard</label>
-                        <div class="">
-                            <textarea class="form-control" id="txt_dashboard" placeholder="Url / tag "></textarea>
-                        </div>
-                    </div>    
-                    <div class="form-group mb2" id="div_anexar_archivo" hidden="">
-                        <label class="control-label" for="txt_archivo">Archivo</label>
-                        <div class="">
-                            <input type="text" class="form-control" id="txt_archivo" placeholder="Archivo anexo para descarga">
-                        </div>
-                    </div> 
+                <form id="form_anexos"  method="post" action="/" enctype="multipart/form-data">
+                    <div class="form" role="form" id=''>
+                        <input class="hidden"  id="accion">
+                        <div class="form-group div_anexar_dashboard" >
+                            <label class="control-label" for="anx_dashboard">Url o tag del dashboard</label>
+                            <div class="">
+                                <textarea class="form-control" id="anx_dashboard" placeholder="Url / tag "></textarea>
+                            </div>
+                        </div>                      
 
-                    <div class="form-group mb2" id="" >
-                        <label class="control-label" for="descripcion">Descripción</label>
-                        <div class="">
-                            <input type="text" class="form-control" id="descripcion" placeholder="breve descripción">
+
+                        <div class="section div_anexar_archivo">
+                            <label class="field prepend-icon file">
+                                <span class="button bg-warning "><i class="fa fa-search"></i> Buscar archivo</span>
+                                <input name="anx_archivo" id="anx_archivo" class="gui-file" onchange="document.getElementById('uploader').value = this.value;" type="file">
+                                <input class="gui-input" id="uploader" type="text" placeholder="Archivo ...">
+                                <label class="field-icon"><i class="fa fa-upload"></i>
+                                </label>
+                            </label>
+                        </div>  
+
+                        <div class="form-group mb2" id="" >
+                            <label class="control-label" for="descripcion">Descripción</label>
+                            <div class="">
+                                <input type="text" class="form-control" id="descripcion" name="descripcion" placeholder="breve descripción">
+                            </div>
                         </div>
+
+
+
+                        <div class="form-group"><button class="btn btn-sm btn-success w300" id="btn_anexar" style="margin:0 25%"> <i class="fa fa-plus"></i> <span> Agregar</span> </button></div>
+
+                        <label class="col-md-12 bg-bluegrey text-white">Elementos existentes</label>
+                        <div id="elementos" class="bordered" style="height: 300px; margin: 0px auto;" >
+                        </div>
+
                     </div>
-                    <div class="form-group"><button class="btn btn-sm btn-success w300" id="btn_anexar" style="margin:0 25%"> <i class="fa fa-plus"></i> Agregar</button></div>
-                    
-                    <label class="col-md-12 bg-bluegrey text-white">Elementos </label>
-                    <div id="elementos" class="bordered" style="height: 300px; margin: 0px auto;" >
-                    </div>
-                     
-                </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button id="btnCancelar" class="btn btn-warning pv_cancel" ><i class="fa fa-times"></i><span> Cancelar</span></button>
-                <button id="btnGuardar" type="submit" class="btn btn-success pv_guardar"   ><i class="fa fa-check"></i><span> Aceptar</span></button>
+                <button id="btnGuardar" type="submit" class="btn btn-primary pv_guardar "   ><i class="fa fa-check"></i><span> Guardar</span></button>
+                <button id="btnCancelar" class="btn btn-warning pv_cancel ml15" ><i class="fa fa-times"></i><span> Cancelar</span></button>
+                
             </div>
         </div>
     </div>
@@ -398,8 +414,6 @@
 <script type="text/javascript" src="/plugins/modify/pivot___.js"></script>
 <script type="text/javascript" src="/plugins/modify/pivot___.es.js"></script>
 
-
-{{-- <script type="text/javascript" src="{{ asset('sty-mode-2/assets/admin-tools/admin-forms/js/additional-methods.min.js') }}"></script> --}}
 <script type="text/javascript" src="{{ asset('sty-mode-2/vendor/plugins/magnific/jquery.magnific-popup.js') }}"></script>
 <script type="text/javascript" src="/sty-mode-2/vendor/plugins/slick/slick.min.js"></script>
 <script type="text/javascript" src="/plugins/underscore/underscore-min.js"></script>
@@ -492,9 +506,9 @@
         nodos : [],
         nodoSel : {},  // elemento menu  nodo seleccionado
         varEstActual : {},    // objeto JSON VariableEstadisticaActual del nodoSel.configuracion 
-        varEstActualUnidades:{}, // objeto de las unidades de medida
+        varEstActual_Unidades:{}, // objeto de las unidades de medida
+        varEstActual_ArchivosExt: {},
         collection : [],
-        indicadorActual: {},
         pivotInstancia:{},
         pivot:{
             data : [], // Datos del pivot  en formato collection 
@@ -675,19 +689,46 @@
                 ctxC.contenedorPredefinidos.append(divImghtml);
             }            
         },
-        cargarDahboardsExternos: function(variableEst){
+        cargarAnexosExternos: function(variableEst, archivos_ext){
             dashboards_ext = variableEst.dashboards_ext;
-            if(dashboards_ext){
-                var opts = dashboards_ext ?  dashboards_ext.reduce(function(carry, elem){
+            var pv_m = 0;
+
+            if(dashboards_ext && dashboards_ext.length > 0){
+
+                var opts =  dashboards_ext.reduce(function(carry, elem){
                     return carry + `<option value="${elem.url}">${elem.descripcion}</option>`;
-                }) : '<option>seleccione..</option>';
+                },'');
                 $("#iframe_combo").html(opts);
+                $("#iframe_url").attr('src', $("#iframe_combo").val());
+                $("#pv_submenu_3").show();
+                pv_m ++;
             }
             else{
                 $("#iframe_combo").html('<option>SIN INFO</option>');
+                $("#pv_submenu_3").hide();
             }
-            
 
+
+            if(archivos_ext && archivos_ext.length > 0){
+                var html = archivos_ext.reduce(function(carry, elem){
+                    return carry + `<div class="row bb m-b-10">
+                                        <div class="col-sm-1"><i class="fa fa-square-o " ></i></div>
+                                        <div class="col-sm-8  ">Archivo: <a href="/archivos/archivos_anexos/${elem.nombre}" target="_blank">${elem.nombre} </a><br>
+                                            ${elem.descripcion}
+                                        </div>
+                                                    
+                                        
+                                    </div>`
+                },'');
+                $("#archivos_ext div").html(html);
+                $("#pv_submenu_2").show();
+                pv_m ++;
+            }
+            else{
+                $("#pv_submenu_2").hide();
+            }
+
+            (pv_m == 0) ? $("#submenus_pv").hide(150) : $("#submenus_pv").show(150);
 
         },
         submenu_pv_activo :  function(index){
@@ -695,22 +736,7 @@
             $("#pv_submenu_" + (index)).addClass('activo');
             $("#contenido_principal").slickGoTo(index-1);
         },
-        crearRequest: function(varEst)  {
-            objVE = {
-                id_indicador : varEst.id_indicador,
-                variable_estadistica : varEst.variable_estadistica,
-                tabla_vista: varEst.tabla_vista,                
-                campo_agregacion: varEst.campo_agregacion,
-                campo_defecto: varEst.campo_defecto,
-                condicion_sql: varEst.condicion_sql,
-                campos_disponibles: varEst.campos_disponibles,
-                porcentaje: varEst.porcentaje ? true : null,
-                _token : $('input[name=_token]').val(),
-            }
-            return objVE;
-        },    
         obtenerData: function(nodoSel){
-            // objRequest = ctxC.crearRequest(varEst);
             ctxC.showLoading(1);            
             $.post('/api/modulopriorizacion/datosVariableEstadistica', 
                     {
@@ -723,31 +749,45 @@
                 ctxG.set_predef_actual.index = 0;
                 ctxC.actualizaTitulos();
                 ctxC.cargarHTMLPredefinidos(ctxG.varEstActual);   
-                ctxC.cargarDahboardsExternos(ctxG.varEstActual);   
+                $.get('/api/modulopriorizacion/datosVariableEstadistica/archivosext_varest', {id_dash_config: nodoSel.id_dash_config,}, function(res){
+                    ctxG.varEstActual_ArchivosExt = res.data;
+                    ctxC.cargarAnexosExternos(ctxG.varEstActual, ctxG.varEstActual_ArchivosExt ); 
+
+                    if((ctxG.varEstActual_ArchivosExt && ctxG.varEstActual_ArchivosExt.length > 0) || (ctxG.varEstActual.dashboards_ext && ctxG.varEstActual.dashboards_ext.length > 0 ))
+                    {
+                        $("#pv_submenu_1").show();
+                        if(ctxG.varEstActual_ArchivosExt && ctxG.varEstActual_ArchivosExt.length > 0)
+                            $("#pv_submenu_2").show()
+                        else
+                            $("#pv_submenu_2").hide();
+
+
+                        if(ctxG.varEstActual.dashboards_ext && ctxG.varEstActual.dashboards_ext.length > 0 )
+                            $("#pv_submenu_3").show()
+                        else
+                            $("#pv_submenu_3").hide()
+
+                    }
+                    else
+                    {
+                        $("#pv_submenu_1, #pv_submenu_2, #pv_submenu_1").hide();
+                    }
+
+                });
+                  
                 ctxG.collection = res.collection;
-                ctxG.varEstActualUnidades.valor_unidad_medida = res.unidad_medida.valor_defecto_um;
-                ctxG.varEstActualUnidades.valor_tipo = res.unidad_medida.valor_tipo;
-                // $.get('/api/modulopriorizacion/datosIndicadoresMeta', {id_indicador : ctxG.varEstActual.id_indicador}, function(r){
-                //     if(r.mensaje=='ok')
-                //     {
-                //         ctxG.indicadorActual = r.indicador;
-                //         ctxG.indicadorActual.metas = r.metasIndicador
-                //     }
-                //     else
-                //         ctxG.indicadorActual = {};
-                //     ctxC.mostrarData(ctxG.collection);
-                //     ctxC.showLoading(0)
-                // } )
+                ctxG.varEstActual_Unidades.valor_unidad_medida = res.unidad_medida.valor_defecto_um;
+                ctxG.varEstActual_Unidades.valor_tipo = res.unidad_medida.valor_tipo;
+
                 ctxC.mostrarData(ctxG.collection);
                 // ctxC.submenu_pv_activo(2);
                 ctxC.submenu_pv_activo(1);
                 ctxC.showLoading(0);
-                // setTimeout(function(){
-                    
-                // }, 1200);
+
                 
                 
-            })
+            });
+
         },
         mostrarData: function(collection){
             ctxPiv.pivottableUI();
@@ -900,20 +940,20 @@
         mostrarModal: function(op)
         {
             var ocultar = op == 'anexar_archivo_ext';
-            $('#div_anexar_dashboard').attr('hidden', ocultar);            
-            $('#div_anexar_archivo').attr('hidden', !ocultar);
+            $('.div_anexar_dashboard').attr('hidden', ocultar);            
+            $('.div_anexar_archivo').attr('hidden', !ocultar);
 
-            this.tituloModal.html( (op==true) ? 'Agregar archivos anexos descargables' : 'Vincular con otra fuente');
+            this.tituloModal.html( (op == 'anexar_archivo_ext') ? 'Agregar archivos anexos descargables' : 'Vincular con otra fuente');
+            $("#btn_anexar span").html( (op == 'anexar_archivo_ext') ? 'Agregar y Guardar archivo' : 'Agregar link externo' );
             $("#anexarModal input, #anexarModal textarea").val('');
             $("#anexarModal #elementos").html('');
-
+            ctxmodAnx.archivos = [];
             var elems =  (op == "anexar_archivo_ext") ?  ctxG.varEstActual.archivos_ext : ctxG.varEstActual.dashboards_ext            
-
+            
             if(elems && elems.length > 0)  {
                 var html = elems.reduce(function(carry, elem){
                     return carry + ctxmodAnx.generaDivs(elem);
                 }, '');
-                $("#anexarModal #elementos").html(html);
                 $("#anexarModal #elementos").html(html);
             }
             $("#anexarModal #accion").val(op);
@@ -930,12 +970,15 @@
         anexarElemento : function(){    
             var elem = {};
             elem.descripcion = $("#anexarModal #descripcion").val();
-            if($("#anexarModal #accion").val() == 'anexar_archivo_ext'){
 
-
+            if($("#anexarModal #accion").val() == 'anexar_archivo_ext'){                
+                elem.url = $("#anx_archivo").val();
+                elem.archivo = $('#anx_archivo').prop('files')[0];
+                elem.descripcion = $("#anexarModal #descripcion").val();
+                ctxmodAnx.guardar(elem);
             }
             else{                
-                elem.url = $("#anexarModal #txt_dashboard").val();
+                elem.url = $("#anexarModal #anx_dashboard").val();
                 if(elem.url.substring(0,7).toLowerCase() == '<iframe' || elem.url.substring(0,6).toLowerCase() == '<frame' ) {
                     elem.url = $(elem.url).attr('src') || 'error: No valido';
                 }
@@ -943,12 +986,13 @@
 
             $("#anexarModal #elementos").append(ctxmodAnx.generaDivs(elem));
             //limpia inputs
-            $("#anexarModal #descripcion, #anexarModal #txt_dashboard,  #anexarModal #txt_archivo, #anexarModal textarea").val('');
+            $("#anexarModal #descripcion, #anexarModal textarea").val('');
         },
-        guardar: function(){
+        guardar: function(elemArch){
             var op = $("#anexarModal #accion").val();
 
             var anexos = [];
+            var files=[];
             $("#anexarModal #elementos .pv_anexo").each(function(){
                 var anx = {
                     'url' : $(this).find('.pv_anx_url').html(),
@@ -956,24 +1000,62 @@
                 };
                 anexos.push(anx);
             });
-
+            
             if(op == 'anexar_archivo_ext'){
-                ctxG.varEstActual.archivos_ext = anexos;
+
+                var objReq = {
+                   archivos_anexos : anexos,
+                   id_dash_config : ctxG.nodoSel.id_dash_config,
+                   _token : $('input[name=_token]').val(),
+                };
+                /*primer post que envia los archivos existentes (los que no se eliminaron)*/
+                $.post('/api/modulopriorizacion/tablero/saveannexedfiles',objReq, function(res){
+                    if(elemArch){
+                        var formData = new FormData($("#form_anexos")[0]);
+                        formData.append('_token', $('input[name=_token]').val());
+                        formData.append('descripcion', elemArch.descripcion);
+                        formData.append('archivo_nuevo', elemArch.archivo);
+                        formData.append('id_dash_config', ctxG.nodoSel.id_dash_config);
+                        
+                        /* segundo post que envia el archivo seleccionado */
+                        $.ajax({
+                            url: '/api/modulopriorizacion/tablero/saveannexedfiles', 
+                            type: "POST",
+                            data: formData,
+                            dataType: 'json',
+                            contentType: false,
+                            processData: false,
+                            success: function(res){
+                                console.log(res.mensaje);
+                            }
+                        });
+
+                        $.get('/api/modulopriorizacion/datosVariableEstadistica/archivosext_varest', {id_dash_config: ctxG.nodoSel.id_dash_config}, function(res){
+                            ctxG.varEstActual_ArchivosExt = res.data;
+                            ctxC.cargarAnexosExternos(ctxG.varEstActual, ctxG.varEstActual_ArchivosExt ); 
+
+                        });
+                    }
+                });               
             }
             if(op == 'anexar_dashboard_ext'){
                 ctxG.varEstActual.dashboards_ext = anexos;
-            };
+                ctxG.varEstActual.archivos_ext = null;
 
-            var configuracionString = JSON.stringify(ctxG.varEstActual);
-            var objReq = {
-                id_dash_menu : ctxG.nodoSel.id,
-                configuracionString : configuracionString,
-                _token : $('input[name=_token]').val(),
-            };
-            $.post("/api/modulopriorizacion/tablero/guardaconfiguracion", objReq, function(res){
-                ctxC.cargarDahboardsExternos(ctxG.varEstActual);  
-                $.magnificPopup.close();
-            });
+                var configuracionString = JSON.stringify(ctxG.varEstActual);
+                var objReq = {
+                    id_dash_menu : ctxG.nodoSel.id,
+                    configuracionString : configuracionString,
+                    _token : $('input[name=_token]').val(),
+                };
+
+                $.post("/api/modulopriorizacion/tablero/guardaconfiguracion", objReq, function(res){
+                    ctxC.cargarAnexosExternos(ctxG.varEstActual);                     
+                });
+
+            };  
+            $.magnificPopup.close();         
+
         },
 
     }
@@ -1015,8 +1097,7 @@
                     ctxG.pivotInstancia = p;
                     ctxPiv.trnDatosDePivot();
                     ctxGra.graficarH();
-                    ctxPiv.pivottableUIRead(p)
-                    console.log(ctxG);
+                    ctxPiv.pivottableUIRead(p);
                 }
             }, true, "es");
         }, 
@@ -1141,7 +1222,7 @@
         },
         graficarH : function()   {
             var tituloChart = ctxG.varEstActual.variable_estadistica;
-            var unidadMedida = ctxG.varEstActual.porcentaje  ? ' (porcentaje) ' : '(' + ctxG.varEstActualUnidades.valor_tipo +': ' + ctxG.varEstActualUnidades.valor_unidad_medida + ') ';
+            var unidadMedida = ctxG.varEstActual.porcentaje  ? ' (porcentaje) ' : '(' + ctxG.varEstActual_Unidades.valor_tipo +': ' + ctxG.varEstActual_Unidades.valor_unidad_medida + ') ';
             var subtituloChart = ctxG.pivot.dimFila + ' vs. ' + ctxG.pivot.dimColumna;
             var tipo = $("#opcionesGrafico").val().split('-');
             var stacked = (tipo[1]  == 'stacked') ? 'normal' : (tipo[1]  == 'stackedp') ? 'percent': '';
@@ -1149,7 +1230,7 @@
             var tipo3d = $("#view3d").prop("checked");;
 
             var vale = tipo[0];
-            var tool = '{series.name}: <b>{point.y:.1f} (' +  ctxG.varEstActualUnidades.valor_unidad_medida +') </b> ';            
+            var tool = '{series.name}: <b>{point.y:.1f} (' +  ctxG.varEstActual_Unidades.valor_unidad_medida +') </b> ';            
             if(tipo[1]){
                 tool += '<br>porcentaje: <b>{point.percentage:.1f} %</b>';
             }
@@ -1269,6 +1350,9 @@ $(function(){
         ctxM.abrirCerrarMenu();
     });
 
+    $( "form" ).submit(function( event ) {
+          event.preventDefault();
+      });
 
 
     /*  Click sobre elemento del menu 

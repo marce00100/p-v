@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\ModuloPriorizacion;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class TableroController extends Controller
 {
+    public $carpeta;
     /**
      * Create a new controller instance.
      *
@@ -14,6 +16,7 @@ class TableroController extends Controller
      */
     public function __construct()
     {
+        $this->carpeta = "archivos/archivos_anexos/";
         // $this->middleware('auth');
         $this->middleware(function ($request, $next) {
             return $next($request);
@@ -162,20 +165,19 @@ class TableroController extends Controller
         $query = $qrySelect . $qryCondicion . $qryGroupBy;
 
 
-        try{
-        $collection  =   collect(\DB::connection('dbestadistica')->select($query));   
+        try
+        {
+            $collection  =   collect(\DB::connection('dbestadistica')->select($query));   
+            $unidadesMedida = collect(\DB::connection('dbestadistica')->select("
+                SELECT valor_unidad_medida, valor_defecto_um, valor_tipo FROM {$tabla} LIMIT 1"))->first();
 
-
-
-
-        $unidadesMedida = collect(\DB::connection('dbestadistica')->select("
-                            SELECT valor_unidad_medida, valor_defecto_um, valor_tipo FROM {$tabla} LIMIT 1"))->first();
-    }
-    catch(\Exception $e)
-    {
-        $collection = array();
-        $unidadesMedida = '';
-    }
+            
+        }
+        catch(\Exception $e)
+        {
+            $collection = array();
+            $unidadesMedida = '';
+        }
         // $indicador = collect(\DB::connection('pgsql')->select("
         //             SELECT * FROM spie_indicadores where id = {$id_indicador} "))->first();
 
@@ -185,6 +187,7 @@ class TableroController extends Controller
         //             WHERE id_indicador = {$id_indicador}
         //             ORDER BY fecha"));
         
+
 
         return Response()->json([ 
                     'mensaje'   => 'ok',
@@ -198,90 +201,22 @@ class TableroController extends Controller
 
     }
 
-    // public function datosVariableEstadistica(Request $req)
-    // {
-    //     $id_indicador = $req->id_indicador;
-    //     $variable_estadistica = $req->variable_estadistica;
-    //     $tabla_vista = $req->tabla_vista;
-    //     $campo_agregacion = $req->campo_agregacion;
-    //     $condicion_sql = $req->condicion_sql;
-    //     // Obtiene los campos con sus alias
-    //     $campos_disponibles_select = implode(', ', $req->campos_disponibles);
-    //     // Para el group by se le quitan los alias
-    //     $campos_originales_groupby = collect($req->campos_disponibles)
-    //                             ->map(function($item, $key){
-    //                                 return stripos($item, ' as ') ?  substr($item, 0, stripos($item, ' as ')) : $item;
-    //                             })->implode(', ');
-
-    //     $qrySelect = $qryCondicion = $qryGroupBy = '';
-
-    //     $tablas = collect(\DB::connection("dbestadistica")->select("select table_name from information_schema.tables 
-    //                             where table_schema='public' and table_type='VIEW'
-    //                             and table_name ilike '%{$tabla_vista}%' "));
-    //     if($tablas->count()<=0)
-    //        return response()->json([ 'mensaje' => "No existe ninguna tabla o vista que coincida con {$tabla_vista}"]) ;
-
-    //     $tabla = $tablas->first()->table_name;
-
-    //     $qrySelect = "SELECT {$campos_disponibles_select}, SUM( {$campo_agregacion} ) AS valor
-    //                 FROM {$tabla} 
-    //                 WHERE 1 = 1 " ; 
-
-    //     $qryCondicion = trim($condicion_sql) == '' ? '' : ' AND ' . $condicion_sql . ' ' ;
-
-    //     $qryGroupBy = " GROUP BY {$campos_originales_groupby} ";
-    //           // ORDER BY t_ano, {$campos_disponibles} " ;
-
-    //     $query = $qrySelect . $qryCondicion . $qryGroupBy;
-    //     $collection  =   collect(\DB::connection('dbestadistica')->select($query));      
-
-    //     $unidadesMedida = collect(\DB::connection('dbestadistica')->select("
-    //                         SELECT valor_unidad_medida, valor_defecto_um, valor_tipo FROM {$tabla} LIMIT 1"))->first();
-
-    //     // $indicador = collect(\DB::connection('pgsql')->select("
-    //     //             SELECT * FROM spie_indicadores where id = {$id_indicador} "))->first();
-
-    //     // $metasPeriodo = collect(\DB::connection('pgsql')->select("
-    //     //             SELECT to_char(fecha, 'YYYY')::int as gestion, meta_del_periodo 
-    //     //             FROM spie_indicadores_metas 
-    //     //             WHERE id_indicador = {$id_indicador}
-    //     //             ORDER BY fecha"));
-        
-
-    //     return Response()->json([ 
-    //                 'mensaje'   => 'ok',
-    //                 'collection'=> $collection,
-    //                 'unidad_medida' => $unidadesMedida,
-    //                 // 'indicador' => $indicador,
-    //                 // 'metas'     => $metasPeriodo,
-    //                 'query'     => $query
-    //     ]);
-
-    // }
-
-
-    public function datosIndicadoresMeta(Request $req)
+    
+    public function archivosExtVarEst(Request $req)
     {
-        $id_indicador = trim($req->id_indicador) == '' ? -111: trim($req->id_indicador) ;
-        $indicadores = \DB::select("SELECT nombre,  linea_base_gestion, linea_base_valor, linea_base_unidad, 
-                                    linea_base_descripcion, meta_gestion, meta_valor, frecuencia
-                                    FROM spie_indicadores i
-                                    WHERE  i.estado AND i.id = {$id_indicador} ");
-        $existeIndicador = count($indicadores);
-
-        $metasIndicador = \DB::select("SELECT  fecha, EXTRACT(YEAR FROM fecha) as gestion, meta_del_periodo, variacion_programada, variacion_acumulada
-                                        FROM spie_indicadores_metas im
-                                        WHERE im.id_indicador = {$id_indicador}  ");
-
+        $id_dash_config = $req->id_dash_config;
+        $archivos_ext = \DB::select("SELECT a.id as id_archivo, a.nombre,  a.descripcion, c.id_dash_config, c.id as id_dash_config_archivo 
+                                        FROM archivos a, dash_config_archivo c 
+                                        WHERE a.id = c.id_archivo AND c.id_dash_config = {$id_dash_config} ");
         return response()->json([
-            'mensaje' => $existeIndicador ? 'ok' : 'no_existe',
-            'indicador'=> $existeIndicador ?  $indicadores[0] : '',
-            'metasIndicador' => $metasIndicador,
+            'data' => $archivos_ext,
         ]);
-
-
     }
 
+
+    /*---------------------------------------------------------------------------
+    | Guarda el JSON de configuracion
+     */
     public function guardaConfiguracion(Request $req)
     {
         $id_dach_menu = $req->id_dash_menu;
@@ -297,4 +232,88 @@ class TableroController extends Controller
 
 
     }
+
+    /*------------------------------------------------------------------------------------------------
+    | Verifica si ya existe el archivo archivos $req->files = [obj1, obj2], cada elemento
+    | tiene la forma obj={id:1, nombre:'file1.txt'}
+     */
+    
+    public function verificaArchivos(Request $req)
+    {
+        $newFiles = [];
+        if($req->files){ 
+            $archivosBD = collect(\DB::select("SELECT nombre from archivos "));
+
+            $newFiles = collect($req->files)->diff($archivosBD); 
+        }
+        return response()->jason(['data' => $newFiles]);
+    }
+
+    /* ----------------------------------------------------------------------------------
+    | Guarda los archivos enviados 
+     */
+    public function saveAnnexedFiles(Request $req)
+    {
+        $id_dash_config = $req->id_dash_config;
+
+        if($req->archivos_anexos){
+
+            /* en archivos_anexos vienen solo los archivos que se quearon despues de eliminar .Es una lista */
+
+            $olds = collect(\DB::select ("SELECT ca.id, a.nombre from dash_config_archivo ca, archivos a 
+                                    where ca.id_archivo = a.id AND  ca.id_dash_config = {$id_dash_config}"));
+            foreach ($olds as $old) {
+                $existe = 0;
+                foreach ($req->archivos_anexos as $n) {
+                    $existe = $old->nombre == $n['url'] ? 1 : $existe;
+                }
+                if($existe == 0) 
+                    \DB::table('dash_config_archivo')->where('id', $old->id )->delete();
+            }
+        }
+        if($req->archivo_nuevo){ 
+            $file=$req->archivo_nuevo;
+
+            $nombreArchivo = $file->getClientOriginalName();
+            // $tipo   = $file->getMimeType();
+            $extension = $file->getClientOriginalExtension();
+            $ruta_archivo_temp = $file->getPathName();
+            // $size = $file->getSize();
+            // $nombreArchivoSystem = uniqid('ORG-');
+            $target = $this->carpeta . $nombreArchivo;
+
+            if(move_uploaded_file($ruta_archivo_temp,$target)){
+
+                $msgFile="Archivo subido correctamente";
+
+                $id_archivo = \DB::table('archivos')->insertGetId([
+                    'nombre' => $nombreArchivo,
+                    'extension' => $extension,
+                    'ruta'=> $target,
+                    'descripcion' => $req->descripcion,
+                    'created_at' => \Carbon\Carbon::now(-4),
+                    'user_id'=> \Auth::user()->id
+                ]);
+                \DB::table('dash_config_archivo')->insert([
+                    'id_archivo' => $id_archivo,
+                    'id_dash_config' => $id_dash_config,
+                ]);
+            }else{
+                $msgFile = "Error al subir el Archivo";
+            }
+
+            return response()->json(
+                ['mensaje'=>$msgFile,
+                'nom'=>$file->getClientOriginalName(),
+                'nombre' => $file->getClientOriginalName(),
+                'extension' => $file->getClientOriginalExtension(),
+                'ruta' => $file->getPathName(),
+                'size' => $file->getSize(),
+                'nombre_UI'=> uniqid('ORG-'),
+            ]);
+        }
+
+       return response()->json(['data' => 'no hay']);
+    }
+
 }

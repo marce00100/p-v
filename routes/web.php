@@ -113,6 +113,11 @@ Route::group(['middleware' => 'auth'],function(){
               Route::get('menustablero', 'ModuloPriorizacion\TableroController@menusTablero');
               Route::post('datosVariableEstadistica', 'ModuloPriorizacion\TableroController@datosVariableEstadistica');
               Route::post('tablero/guardaconfiguracion', 'ModuloPriorizacion\TableroController@guardaConfiguracion');
+              Route::post('tablero/verificaarchivos', 'ModuloPriorizacion\TableroController@verificaArchivos');
+              Route::post('tablero/saveannexedfiles', 'ModuloPriorizacion\TableroController@saveAnnexedFiles');
+              Route::get('datosVariableEstadistica/archivosext_varest', 'ModuloPriorizacion\TableroController@archivosExtVarEst');
+
+
               Route::get('datosIndicadoresMeta', 'ModuloPriorizacion\TableroController@datosIndicadoresMeta');
 
           }

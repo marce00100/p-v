@@ -92,21 +92,21 @@ Route::group(['middleware' => 'auth'],function(){
       Route::group(
           array('prefix' => 'modulopriorizacion'),
           function() {
-              Route::get('dashboard', 'ModuloPriorizacion\DashboardController@index');
+              // Route::get('dashboard', 'ModuloPriorizacion\DashboardController@index');
               Route::get('tablero', 'ModuloPriorizacion\TableroController@index');
           }
       );
-      Route::group(
-          array('prefix' => 'modulopriorizacion/ajax'),
-          function() {
-              Route::get('cargarhijos', 'ModuloPriorizacion\DashboardController@cargarHijos');
-              Route::get('configurarfiltrovariable', 'ModuloPriorizacion\DashboardController@configurarFiltroVariable');
-              Route::get('generardatosVE0001', 'ModuloPriorizacion\DashboardController@generarDatosVE0001');
-              Route::get('generardatosVE0003', 'ModuloPriorizacion\DashboardController@generarDatosVE0003');
-              Route::get('generardatosVE0002', 'ModuloPriorizacion\DashboardController@generarDatosVE0002');
-              Route::get('obtenerDatosFiltro', 'ModuloPriorizacion\DashboardController@obtenerDatosFiltro');
-          }
-      );
+      // Route::group(
+      //     array('prefix' => 'modulopriorizacion/ajax'),
+      //     function() {
+      //         Route::get('cargarhijos', 'ModuloPriorizacion\DashboardController@cargarHijos');
+      //         Route::get('configurarfiltrovariable', 'ModuloPriorizacion\DashboardController@configurarFiltroVariable');
+      //         Route::get('generardatosVE0001', 'ModuloPriorizacion\DashboardController@generarDatosVE0001');
+      //         Route::get('generardatosVE0003', 'ModuloPriorizacion\DashboardController@generarDatosVE0003');
+      //         Route::get('generardatosVE0002', 'ModuloPriorizacion\DashboardController@generarDatosVE0002');
+      //         Route::get('obtenerDatosFiltro', 'ModuloPriorizacion\DashboardController@obtenerDatosFiltro');
+      //     }
+      // );
       Route::group(
           array('prefix' => 'api/modulopriorizacion'),
           function() {

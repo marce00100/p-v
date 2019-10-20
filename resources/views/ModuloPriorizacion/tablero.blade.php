@@ -425,6 +425,7 @@
      *      cnf variables de configuracion  del modulo, como coleres, iconos y otros
      */
     var cnf = {
+        rutabase: '/api/modulopriorizacion',
         m : {   // m menu
             activoPri : 'activoPri',
             activoSub : 'activoSub',
@@ -498,7 +499,7 @@
         },
 
     }
-    // var pivot = '';
+
     /*-----------------------------------------------------------------------
      *      ctxG variable que contiene el contexto global, variables globales
      */
@@ -521,7 +522,7 @@
             $(".state-error").removeClass("state-error")
             // $(modal + " em").remove();
             $.magnificPopup.open({
-                removalDelay: 500, //delay removal by X to allow out-animation,
+                removalDelay: 500, 
                 // focus: '#pmra_id_pilar',
                 items: {
                     src: modal
@@ -555,7 +556,7 @@
             ctxM.menup_estado = Math.abs(ctxM.menup_estado - 1);
         },
         creaMenuBaseHtml : function(){
-            $.get('/api/modulopriorizacion/menustablero', function(res){
+            $.get(cnf.rutabase + '/menustablero', function(res){
                 ctxG.nodos = res.nodosMenu;                
                 for(i=0; i< ctxG.nodos.length; i++ )
                 {
@@ -738,7 +739,7 @@
         },
         obtenerData: function(nodoSel){
             ctxC.showLoading(1);            
-            $.post('/api/modulopriorizacion/datosVariableEstadistica', 
+            $.post(cnf.rutabase + '/datosVariableEstadistica', 
                     {
                         id_dash_config: nodoSel.id_dash_config, 
                         _token : $('input[name=_token]').val(),
@@ -749,7 +750,7 @@
                 ctxG.set_predef_actual.index = 0;
                 ctxC.actualizaTitulos();
                 ctxC.cargarHTMLPredefinidos(ctxG.varEstActual);   
-                $.get('/api/modulopriorizacion/datosVariableEstadistica/archivosext_varest', {id_dash_config: nodoSel.id_dash_config,}, function(res){
+                $.get(cnf.rutabase + '/datosVariableEstadistica/archivosext_varest', {id_dash_config: nodoSel.id_dash_config,}, function(res){
                     ctxG.varEstActual_ArchivosExt = res.data;
                     ctxC.cargarAnexosExternos(ctxG.varEstActual, ctxG.varEstActual_ArchivosExt ); 
 
@@ -916,7 +917,7 @@
                 configuracionString : configuracionString,
                 _token : $('input[name=_token]').val(),
             };
-            $.post("/api/modulopriorizacion/tablero/guardaconfiguracion", objReq, function(res){
+            $.post(cnf.rutabase + "/tablero/guardaconfiguracion", objReq, function(res){
                 ctxC.cargarHTMLPredefinidos(ctxG.varEstActual);  
                 $.magnificPopup.close();
             });
@@ -1009,7 +1010,7 @@
                    _token : $('input[name=_token]').val(),
                 };
                 /*primer post que envia los archivos existentes (los que no se eliminaron)*/
-                $.post('/api/modulopriorizacion/tablero/saveannexedfiles',objReq, function(res){
+                $.post(cnf.rutabase + '/tablero/saveannexedfiles',objReq, function(res){
                     if(elemArch){
                         var formData = new FormData($("#form_anexos")[0]);
                         formData.append('_token', $('input[name=_token]').val());
@@ -1019,7 +1020,7 @@
                         
                         /* segundo post que envia el archivo seleccionado */
                         $.ajax({
-                            url: '/api/modulopriorizacion/tablero/saveannexedfiles', 
+                            url: cnf.rutabase + '/tablero/saveannexedfiles', 
                             type: "POST",
                             data: formData,
                             dataType: 'json',
@@ -1030,7 +1031,7 @@
                             }
                         });
 
-                        $.get('/api/modulopriorizacion/datosVariableEstadistica/archivosext_varest', {id_dash_config: ctxG.nodoSel.id_dash_config}, function(res){
+                        $.get(cnf.rutabase + '/datosVariableEstadistica/archivosext_varest', {id_dash_config: ctxG.nodoSel.id_dash_config}, function(res){
                             ctxG.varEstActual_ArchivosExt = res.data;
                             ctxC.cargarAnexosExternos(ctxG.varEstActual, ctxG.varEstActual_ArchivosExt ); 
 
@@ -1049,7 +1050,7 @@
                     _token : $('input[name=_token]').val(),
                 };
 
-                $.post("/api/modulopriorizacion/tablero/guardaconfiguracion", objReq, function(res){
+                $.post(cnf.rutabase + "/tablero/guardaconfiguracion", objReq, function(res){
                     ctxC.cargarAnexosExternos(ctxG.varEstActual);                     
                 });
 

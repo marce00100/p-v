@@ -168,15 +168,21 @@ class TableroController extends Controller
         try
         {
             $collection  =   collect(\DB::connection('dbestadistica')->select($query));   
-            $unidadesMedida = collect(\DB::connection('dbestadistica')->select("
-                SELECT valor_unidad_medida, valor_defecto_um, valor_tipo FROM {$tabla} LIMIT 1"))->first();
-
-            
         }
-        catch(\Exception $e)
+        catch (\Exception $e)
         {
             $collection = array();
-            $unidadesMedida = '';
+        }
+
+        try {
+            $unidadesMedida = collect(\DB::connection('dbestadistica')->select("
+                SELECT valor_unidad_medida, valor_defecto_um, valor_tipo FROM {$tabla} LIMIT 1"))->first();
+        }
+
+        catch(\Exception $e)
+        {
+
+            $unidadesMedida = '_';
         }
         // $indicador = collect(\DB::connection('pgsql')->select("
         //             SELECT * FROM spie_indicadores where id = {$id_indicador} "))->first();
